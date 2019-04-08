@@ -17,28 +17,16 @@ const initValues = {
     size : 16
 }
 
-export const bigger = (size) => {
-    return {
-        type: BIGGER,
-        size,
-    }
-}
-
-export const smaller = (size) => {
-    return {
-        type: SMALLER,
-        size,
-    }
-}
-
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
-function* biggerAsync() {
+function* biggerAsync(action) {
+    const { size } = action;
     yield call(delay, 3000);
-    yield put({ type: BIGGER});
+    yield put({ type: BIGGER, size});
 }
-function* smallerAsync() {
+function* smallerAsync(action) {
+    const { size } = action;
     yield call(delay, 3000);
-    yield put({ type: SMALLER});
+    yield put({ type: SMALLER, size});
 }
 export function* asyncSaga() {
     // yield takeEvery(BIGGER_ASYNC, biggerAsync); // 允许多个任务同时启动，在短时间频繁点击时，将会多次执行biggerAsync。
@@ -47,9 +35,10 @@ export function* asyncSaga() {
 }
 
 export function reducerFontSize(state = initValues, action = {}) {
+    const { size } = action;
     switch(action.type) {
-        case BIGGER: return { ...state, size: state.size + 1 };
-        case SMALLER: return { ...state, size: state.size - 1 };
+        case BIGGER: return { ...state, size: size + 1 };
+        case SMALLER: return { ...state, size: size - 1 };
         case BIGGER_ASYNC: return state;
         case SMALLER_ASYNC: return state;
         default: return state;
