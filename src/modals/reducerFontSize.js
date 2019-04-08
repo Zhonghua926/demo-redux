@@ -1,4 +1,9 @@
-import { put, call, takeEvery } from 'redux-saga/effects';
+import {
+    put,
+    call,
+    // takeEvery,
+    takeLatest
+} from 'redux-saga/effects';
 
 export const BIGGER = 'bigger';
 
@@ -31,16 +36,14 @@ function* biggerAsync() {
     yield call(delay, 3000);
     yield put({ type: BIGGER});
 }
-export function* biggerAsyncSaga() {
-    yield takeEvery(BIGGER_ASYNC, biggerAsync);
-}
-
 function* smallerAsync() {
     yield call(delay, 3000);
     yield put({ type: SMALLER});
 }
-export function* smallerAsyncSaga() {
-    yield takeEvery(SMALLER_ASYNC, smallerAsync);
+export function* asyncSaga() {
+    // yield takeEvery(BIGGER_ASYNC, biggerAsync); // 允许多个任务同时启动，在短时间频繁点击时，将会多次执行biggerAsync。
+    yield takeLatest(BIGGER_ASYNC, biggerAsync);  // 只监听最新的请求，可以防止多次请求，在短时间频繁点击时，只执行一次。
+    yield takeLatest(SMALLER_ASYNC, smallerAsync);
 }
 
 export function reducerFontSize(state = initValues, action = {}) {
