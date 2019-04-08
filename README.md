@@ -248,3 +248,66 @@ const store = createStore(reducer);
 export default store;
 
 ```
+### 使用Redux-saga
+- 1.`Redux`只支持同步操作，这里我使用`Redux-saga`中间件，来加强`store`,使得`Redux`可以调用异步操作
+```
+// FontSize.js
+render() {
+    const {size} = this.state;
+    return (
+        <div>
+            ...
+            <Button onClick={() => {store.dispatch({type: BIGGER_ASYNC, size})}}>3秒后增加</Button>
+            <Button onClick={() => {store.dispatch({type: SMALLER_ASYNC, size})}}>3秒后减小</Button>
+            ...
+        </div>
+    )
+}
+// reducerFontSize.js
+import { put, call, takeLatest } from 'redux-saga/effects';
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+function* biggerAsync(action) {
+    const { size } = action;
+    yield call(delay, 3000);
+    yield put({ type: BIGGER, size});
+}
+function* smallerAsync(action) {
+    const { size } = action;
+    yield call(delay, 3000);
+    yield put({ type: SMALLER, size});
+}
+export function* asyncSaga() {
+    yield takeLatest(BIGGER_ASYNC, biggerAsync);
+    yield takeLatest(SMALLER_ASYNC, smallerAsync);
+}
+// modals目录下新建rootSaga.js
+import { all } from 'redux-saga/effects';
+import { asyncSaga } from './reducerFontSize';
+
+export default function* rootSaga() {
+    yield all([
+        asyncSaga(),
+    ])
+}
+// store.js
+import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { reducerCaption } from './modals/reducerCaption';
+import { reducerFontSize } from './modals/reducerFontSize';
+import createSagaMiddleware from 'redux-saga';
+import rootSaga from './modals/rootSaga';
+
+const sagaMiddleware = createSagaMiddleware()
+let middlewares = []
+middlewares.push(sagaMiddleware)
+
+const reducer = combineReducers({
+    reducerCaption,
+    reducerFontSize
+});
+const store = createStore(reducer, applyMiddleware(...middlewares));
+
+sagaMiddleware.run(rootSaga);
+
+export default store;
+```
+- `rootSaga.js`将不同组件的异步操作集中在一起，然后通过`sagaMiddleware.run()`一起执行
