@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import store from '../store';
-import { bigger, smaller } from '../modals/renderFontSize';
+import { bigger, smaller } from '../modals/reducerFontSize';
 import Button from '../components/Button';
 
 

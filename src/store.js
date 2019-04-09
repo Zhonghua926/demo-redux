@@ -1,6 +1,6 @@
 import { createStore, combineReducers } from 'redux';
 import { reducerCaption } from './modals/reducerCaption';
-import { reducerFontSize } from './modals/renderFontSize';
+import { reducerFontSize } from './modals/reducerFontSize';
 
 const reducer = combineReducers({
     reducerCaption,
