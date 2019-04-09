@@ -49,7 +49,7 @@
 |   |   `-- Button.js
 |   |-- modals  // 存放不同的action
 |   |   |-- reducerCaption.js
-|   |   `-- renderFontSize.js
+|   |   `-- reducerFontSize.js
 |   |-- routes  // 视图展示层
 |   |   |-- App.js
 |   |   |-- Counter.js
@@ -89,7 +89,7 @@ create-react-app demo
 |   |   `-- Button.js
 |   |-- modals  // 存放不同的action
 |   |   |-- reducerCaption.js
-|   |   `-- renderFontSize.js
+|   |   `-- reducerFontSize.js
 |   `-- routes  // 视图展示层
 |       |-- App.js
 |       |-- Counter.js
